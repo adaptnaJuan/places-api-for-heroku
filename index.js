@@ -15,11 +15,18 @@ function googlePlaceSearch(creds, params, callback) {
     "&key=" + creds.key;
   https.get(
     url, 
-    function(response) {
-      response.on('data', function (data) {
-        data = JSON.parse(data);
-        callback(null, data, response);
+    function(res) {
+      var data = '';
+
+      res.on('data', function (chunk) {
+        data += chunk;
       });
+
+      res.on('end', function() {
+        data = JSON.parse(data);
+        callback(null, data, res);
+      })
+
   }).on('error', function(err) {
     callback(err);
   });
